@@ -7,3 +7,10 @@ const salaries = {
   Poly: 160,
   Ajax: 1470,
 }
+let sum = 0;
+const val = Object.values(salaries)
+for (const element of val) {
+  sum += element;
+ }
+
+console.log (sum)
