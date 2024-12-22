@@ -4,9 +4,9 @@
 // Типів транзакцій всього два.Можна або покласти гроші на рахунок, або зняти гроші з рахунка
 
 const Transaction = {
-  DEPOSIT: 'deposit',
-  WITHDRAW: 'withdraw',
-}
+  DEPOSIT: "deposit",
+  WITHDRAW: "withdraw",
+};
 
 // Кожна транзакція - це об'єкт із властивостями id, type, amount
 
@@ -22,9 +22,10 @@ const account = {
 
   createTransaction(type, amount) {
     return {
+      id: this.transactions.length,
       type,
       amount,
-    }
+    };
   },
 
   // Метод відповідає за додавання суми до балансу.
@@ -32,7 +33,11 @@ const account = {
   // Викликає createTransaction для створення об'єкта транзакції
   // Після чого додає його до історії транзакцій
 
-  deposit(amount) {},
+  deposit(amount) {
+    this.balance += amount;
+    const operation = this.createTransaction(Transaction.DEPOSIT, amount);
+    this.transactions.push(operation);
+  },
 
   // Метод відповідає за зняття суми з балансу.
   // Приймає суму тразакцій.
@@ -40,14 +45,47 @@ const account = {
   // Після чого додає його до історії транзакцій
   // Якщо amount більше за поточний баланс, виводимо повідомлення про те, що на рахунку недостатньо коштів
 
-  withdraw(amount) {},
+  withdraw(amount) {
+    if (amount > this.balance) {
+      return "недостатньо коштів";
+    }
+    this.balance -= amount;
+    const operation = this.createTransaction(Transaction.WITHDRAW, amount);
+    this.transactions.push(operation);
+  },
 
   // Метод, що повертає поточний баланс
-  getBalance() {},
+  getBalance() {
+    return this.balance;
+  },
 
   // Метод шукає та повертає об'єкта транзакції по id
-  getTransactionDetails(id) {},
+  getTransactionDetails(id) {
+    for (const el of this.transactions) {
+      if (el.id === id) {
+        return el;
+      }
+    }
+  },
 
   // Метод повертає кількість коштів певного типу тразакції зі всієї історії транзакції
-  getTransactionType(type) {},
-}
+  getTransactionType(type) {
+    let sum = 0;
+
+    for (const element of this.transactions) {
+      if (element.type === type) {
+        sum += element.amount;
+      }
+    }
+    return sum;
+  },
+};
+
+account.deposit(89);
+account.deposit(89);
+account.deposit(89);
+account.withdraw(59);
+console.log(account.withdraw(659));
+console.log(account.getBalance());
+console.log(account.getTransactionDetails(1));
+console.log(account.getTransactionType(Transaction.DEPOSIT));
